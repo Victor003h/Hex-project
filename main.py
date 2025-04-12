@@ -18,17 +18,20 @@ def main():
          
             
     def Vs_ia():
-        player=Player(1)
-        ia_player=IAPlayer(2)
-        is_ia=False
-        current_player=player
+        player=Player(2)
+        ia_player=IAPlayer(1)
+        is_ia=True
+        current_player=ia_player
 
         while(True):
+            if is_ia:
+                input("Turno de la IA,presione cualquer botom")
+                
             move=current_player.play(board)
             board.place_piece(move[0],move[1],current_player.player_id)
             board.show()
             
-            if  board.check_connection()!= 0:
+            if  board.check_connection(player_id)!= 0:
             
                 print(f"Ha ganado el jugador: {current_player.player_id}")
                 break
@@ -55,7 +58,7 @@ def main():
             
             board.show()
             
-            if  board.check_connection()!=0:
+            if  board.check_connection(player_id)!=0:
             
                 print(f"Ha ganado el jugador: {current_player.player_id}")
                 break

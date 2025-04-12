@@ -28,17 +28,18 @@ class HexBoard:
     
     
     
-    def check_connection(self) -> int:   # 1 if 2 win , -1 if 1 , and 0 if nobady win yet
+    def check_connection(self,player_id) -> int:   # 1 if 2 win , -1 if 1 , and 0 if nobady win yet
         mask= [[False] * self.size for _ in range(self.size)] 
+        if player_id==1:
+            for row in range(self.size):
+                if self.board[row][0]!=1: continue
+                mask[row][0]=True
+                res=self.check_connection_player1(row,0,1,mask)
+                mask[row][0]=False
+                if res:return -math.inf
+            
+            return 0
         
-        for row in range(self.size):
-            if self.board[row][0]!=1: continue
-            mask[row][0]=True
-            res=self.check_connection_player1(row,0,1,mask)
-            mask[row][0]=False
-            if res:return -math.inf
-            
-            
         for col in range(self.size):
             if self.board[0][col]!=2: continue
             mask[0][col]=True
