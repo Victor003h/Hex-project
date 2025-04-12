@@ -1,0 +1,105 @@
+\documentclass[a4paper,12pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[spanish]{babel}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{geometry}
+\usepackage{longtable}
+\usepackage{amsmath}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{array}
+
+% Configuración de márgenes
+\geometry{top=2.5cm, bottom=2.5cm, left=2.5cm, right=2.5cm}
+
+% Configuración de encabezado y pie de página
+\pagestyle{fancy}
+\fancyhead{}
+\fancyfoot{}
+\fancyhead[L]{Jugador inteligente para el juego de mesa Hex.}
+\fancyfoot[C]{\thepage}
+
+% Configuración de títulos
+
+\titleformat{\section}{\large\bfseries}{\thesection}{1em}{}
+\titleformat{\subsection}{\normalsize\bfseries}{\thesubsection}{1em}{}
+\titleformat{\subsubsection}{\normalsize\itshape}{\thesubsubsection}{1em}{}
+
+% Configuración de código fuente
+\lstset{
+	basicstyle=\ttfamily\footnotesize,
+	breaklines=true,
+	commentstyle=\color{gray},
+	keywordstyle=\color{blue},
+	stringstyle=\color{red},
+	numbers=left,
+	numberstyle=\tiny\color{gray}
+}
+
+\begin{document}
+	
+	\begin{titlepage}
+		\centering
+		\vspace{1in}
+		{\Huge \bfseries Jugador inteligente para el juego de mesa Hex \par}
+		\vspace{1.5in}
+		\centering
+		\vspace{1in}
+		{\Huge \bfseries Autor \par}
+		{\Large Victor Hugo Pacheco Fonseca  \par}
+		
+		\vfill
+		{\Large \today \par}
+	\end{titlepage}
+	
+	\tableofcontents
+	\newpage
+	
+	
+	\section{Introducción}
+	El objetivo de este proyecto es desarrollar una IA para el juego de Hex, que tenga la capacidad de evaluar posiciones complejas y tomar decisiones informadas durante la partida. Para ello se han implementado diversas estrategias de búsqueda y evaluación, combinando algoritmos clásicos de inteligencia artificial y heurísticas adaptadas a las particularidades del juego Hex.
+
+	\section{Hex}
+	El juego de Hex es un fascinante y estratégico juego de mesa en el que dos jugadores compiten para conectar lados opuestos de un tablero hexagonal.A continuación un se explica en que consiste el juego Hex y sus reglas.
+	
+	\subsection{Objetivo del juego}
+	Cada jugador tiene el objetivo de crear un camino continuo de fichas propias que conecte dos lados opuestos de su color. Uno de los jugadores debe conectar los bordes izquierdo y derecho, mientras que el otro debe conectar los bordes superior e inferior.
+	\subsection{Reglas}
+	\begin{itemize}
+		\item Turnos alternos: Los jugadores colocan una ficha en una celda hexagonal vacía del tablero durante su turno.
+		\item Sin movimiento de fichas: Una vez que una ficha se coloca en el tablero, no se puede mover ni eliminar.
+		\item Ganador: El primer jugador que logre conectar sus lados opuestos gana la partida.
+		\item No hay empate: En el juego de Hex, siempre hay un ganador debido a la estructura del tablero y las reglas del juego.
+	\end{itemize}
+	\section{Algoritmo Implementado}
+	El algoritmo principal del programa consiste en un Minimax con poda alfa-beta.Este permite explorar el árbol de posibilidades y seleccionar el movimiento que maximiza la posición del jugador mientras minimiza la del adversario.En cada hoja del árbol (o cuando se alcanza la profundidad límite), se evalúa el estado del juego utilizando una función heurística.
+	
+	\section{Heuristicas}
+	\subsection{Dijkstra}
+		 La heuristica base,consiste en una función que calcula el número mínimo de movimientos necesarios para conectar los bordes objetivos.Teniendo en cuenta la siguiente función de peso:
+		 \begin{itemize}
+		 	\item Llegar a una celda que  contienen la ficha del jugador tienen costo 0.
+		 	\item Llegar a una celda vacia tiene costo 1.
+		 	\item  Una celda ocupada por el adversario se considera bloqueada (coste infinito).
+		\end{itemize}
+		La diferencia entre las distancias minimas  de ambos jugadores(distancia del oponente - dist propia) determina la heuristica.
+		 \subsection{Incorporación de puentes}
+		 Se ha modificado el algoritmo Dijkstra para considerar conexiones por puente.
+		 \begin{itemize}
+		 	\item Cuando dos fichas propias pueden formar puente mediante dos rutas seguras (descompuestas en dos movimientos consecutivos), se le asigna un costo 0 (como si estuvieran adyacentes).Esto “acorta” virtualmente el camino, favoreciendo posiciones con estructuras de puente.
+		 \end{itemize}
+		 \subsection{Evaluación de Puentes y Posiciones Críticas}
+		 \subsubsection{Detección de puentes}
+		 Luego de probar una posicion, se verifica si esta forma un puente con otra casilla, y se le suma un bonus adicional.
+		 \subsubsection{Verificación de posiciones críticas}
+		 Se determina si una celda es crítica dentro de un puente. Una posición crítica es aquella en la que, para completar la conexión, se necesita ocuparla, especialmente si la celda complementaria ya se encuentra ocupada por el adversario.
+		 \newline
+		 Dado una posicion, identifica si es parte de un puente y chequea si la otra celda crítica está ocupada por el adversario.En ese caso, se otorga un bonus  a la evaluación, incentivando a la IA a jugar en esa posición para asegurar o completar el puente.
+		 
+		 
+		 
+	
+\end{document}

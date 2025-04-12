@@ -33,9 +33,14 @@ class IAPlayer(Player):
         for i,j in possible_moves:
             board.place_piece(i,j,player_id)
             depth=1
-            if len(possible_moves)>40:
-                depth=1
             
+            if len(possible_moves)<20:  # 2 <49     4   20   3  30 2  49
+                depth=4
+            elif len(possible_moves)<30:
+                depth=3
+            elif len(possible_moves)<50:
+                depth=2
+                
             score=self.MiniMax(depth,board,opp,-math.inf,math.inf)
             #if score==math.inf:
                # return (i,j)
@@ -48,7 +53,7 @@ class IAPlayer(Player):
             
         return move
     
-    def getWheigt(self,board:HexBoard,row,col,player_id):
+    def getWeight(self,board:HexBoard,row,col,player_id):
         if board.board[row][col]==player_id:
             return 0
         if board.board[row][col]==0:
@@ -73,7 +78,7 @@ class IAPlayer(Player):
         if player_id==1:
             for r in range(board.size):
                 c = 0
-                cost_here = self.getWheigt(board,r,c,player_id)
+                cost_here = self.getWeight(board,r,c,player_id)
                 if cost_here < math.inf:
                     d[r][c] = cost_here
                     #ways[r][c]=1
@@ -81,7 +86,7 @@ class IAPlayer(Player):
         else:
              for c in range(board.size):
                 r = 0
-                cost_here = self.getWheigt(board,c,r,player_id)
+                cost_here = self.getWeight(board,c,r,player_id)
                 if cost_here < math.inf:
                     d[r][c] = cost_here
                    # ways[r][c]=1
@@ -102,7 +107,7 @@ class IAPlayer(Player):
                 n_row= move[0]
                 n_col= move[1]
                 
-                w=self.getWheigt(board,n_row,n_col,player_id)
+                w=self.getWeight(board,n_row,n_col,player_id)
                 if d[n_row][n_col]> d[c_row][c_col]+ w:
                     d[n_row][n_col]=d[c_row][c_col]+ w
                     # ways[n_row][n_col] = ways[c_row][c_col]
@@ -280,15 +285,6 @@ class IAPlayer(Player):
                 else:
                     return (board.size-1,board.size-1)
           
-    def itsOpening(self,board:HexBoard):
-        cont=0
-        for i in range(board.size): 
-            for j in range(board.size): 
-                if board.board[i][j]!=0:cont+=1
-        
-        if cont>1:return False
-        return True
-        
         
     def ItsCriticalBridge(self,board:HexBoard,row,col,player_id):
         bridges_pos=[(1,-2),(-1,-1),(1,1),(-1,2),(-2,1),(2,-1)] # a,b,e,d,c,f    
@@ -323,11 +319,6 @@ class IAPlayer(Player):
         return 0
                 
                 
-    def PrincipalHeuristic(self,board,row,col,player_id):
-        score=self.Dijkstra_Heuristic(board)
-        score+=self.ItsCriticalBridge(board,row,col,player_id)
-        
-        return score
     
         
         
